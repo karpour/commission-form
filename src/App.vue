@@ -67,7 +67,7 @@
               id="inputTelegram"
               aria-describedby="labelTelegram"
               placeholder="Your Telegram handle"
-              v-model="inputTelegram"
+              v-model.lazy="inputTelegram"
             />
           </div>
         </div>
@@ -87,6 +87,7 @@
               id="inputTwitter"
               aria-describedby="labelTwitter"
               placeholder="Your Twitter handle"
+              v-model.lazy="inputTwitter"
             />
           </div>
         </div>
@@ -96,7 +97,7 @@
 
       <!-- This is currently very static and would benefit from components -->
       <!-- Display radio buttons only if there are alternative contact methods given other than e-mail -->
-      <div class="form-group row" v-if="inputTelegram.length>0 || inputTwitter>0">
+      <div class="form-group row" v-if="inputTelegram.length>0 || inputTwitter.length>0">
         <label for="inputName" class="col-sm-2 col-form-label">How to reach you</label>
         <div class="col-sm-10">
           <div class="radio">
@@ -108,7 +109,7 @@
               E-mail
             </label>
           </div>
-          <div class="radio">
+          <div class="radio" v-if="inputTwitter">
             <label>
               <input type="radio" name="optradio" />
               <span class="px-2">
@@ -117,7 +118,7 @@
               Twitter
             </label>
           </div>
-          <div class="radio disabled">
+          <div class="radio" v-if="inputTelegram.length>0">
             <label>
               <input type="radio" name="optradio" />
               <span class="px-2">
@@ -173,7 +174,8 @@ export default {
     return {
       commissionData: {},
       selectedComissionType: "",
-      inputTelegram: ""
+      inputTelegram: "",
+      inputTwitter: "",
     };
   },
   methods: {
