@@ -94,9 +94,10 @@ export default {
 
 <style scoped>
 .selected {
+  background-color: #82e7df;
   border-style: solid;
-  border-width: 2px;
-  border-color: black;
+  border-width: 1px;
+  border-color: #12bbad;
 }
 .price-text {
   font-size: x-large;

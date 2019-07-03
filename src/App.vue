@@ -3,7 +3,9 @@
     <!-- Header -->
     <div class="row">
       <div class="col py-2 bg-info">
-        <h1 class="display-3 text-center text-white"><strong>Art by Karpour</strong></h1>
+        <h1 class="display-3 text-center text-white">
+          <strong>Art by Karpour</strong>
+        </h1>
       </div>
     </div>
 
@@ -40,7 +42,7 @@
     </div>
 
     <!-- Form -->
-    <form class="py-3">
+    <form @submit.prevent="handleSubmit" class="py-3">
       <!-- Name -->
       <div class="form-group row">
         <label for="inputName" class="col-sm-2 col-form-label">Name</label>
@@ -200,23 +202,38 @@
         <p class="display-4 text-info text-center">Estimated total: {{formattedPrice}}</p>
       </div>
 
+      <!-- Reminder to select commission type -->
+      <div class="row justify-content-center">
+        <div class="col-12">
+          <p class="text-muted text-center">{{commissionSelected?'&nbsp;':'Please select a commission type.'}}</p>
+        </div>
+      </div>
       <!-- Submit Button -->
       <div class="form-group row justify-content-center">
-        <button type="submit" class="btn btn-primary btn-lg">Place order</button>
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg"
+          :disabled="!commissionSelected"
+          data-toggle="modal"
+          :data-target="formValidated?'#successModal':''"
+        >Place order</button>
       </div>
     </form>
+    <SuccessModal></SuccessModal>
   </div>
 </template>
 
 <script>
 import ProductCard from "./components/ProductCard.vue";
 import ReferenceUploader from "./components/ReferenceUploader.vue";
+import SuccessModal from "./components/SuccessModal.vue";
 
 export default {
   name: "app",
   components: {
     ProductCard,
-    ReferenceUploader
+    ReferenceUploader,
+    SuccessModal
   },
   data: function() {
     return {
@@ -233,21 +250,49 @@ export default {
         expression: "",
         additionalInfo: ""
       },
-      formData: new FormData(),
     };
   },
   methods: {
+    /**
+     * Handles a press of the choice button of a ProductCard
+     */
     chooseHandler: function(e) {
       // console.log("Selected " + e);  // eslint-disable-line
       this.selectedCommissionType = e.name;
       this.selectedCommissionPrice = e.price;
       this.selectedCommissionPriceUpper = e.priceUpper;
     },
+    /**
+     * Sets the Commission items which will be used as data source
+     * the ProductCard instances
+     */
     setCommissionData(commissionData) {
       // console.log(commissionData);  // eslint-disable-line
       this.commissionData = commissionData;
+    },
+    /**
+     * Handles form submission
+     */
+    handleSubmit() {
+      // TODO Possible add more validation code here
+      // (Check for best practices)
+
+      // Assemble FormData Object
+      // Add all non-empty fields to the FormData Object
+      let formData = new FormData;
+      for(let key in this.formFields){
+        if(this.formFields[key]){
+          console.log(key+": "+this.formFields[key]);  // eslint-disable-line
+          formData.append(key,this.formFields[key]);
+        }
+      }
+      // Add files to Formdata object
+      // TODO add files
     }
   },
+  /**
+   * Makes a (mocked) API call to retrieve the commission data and stores it
+   */
   created: function() {
     // console.log("Getting commission data\n"); // eslint-disable-line
     var self = this;
@@ -257,12 +302,40 @@ export default {
         self.setCommissionData(response.data);
       })
       .catch(function(response) {
-        console.log(response);  // eslint-disable-line
+        console.log(response); // eslint-disable-line
       });
   },
+
   computed: {
+    /**
+     * Returns the formatted price, e.g. 30€
+     * If upperPrice is set, then the format is <price>€ - <upperPrice>€
+     */
     formattedPrice() {
-      return this.selectedCommissionPrice+'€'+(this.selectedCommissionPriceUpper>0?' - '+this.selectedCommissionPriceUpper+'€':'')
+      return (
+        this.selectedCommissionPrice +
+        "€" +
+        (this.selectedCommissionPriceUpper > 0
+          ? " - " + this.selectedCommissionPriceUpper + "€"
+          : "")
+      );
+    },
+    /**
+     * Performs validation on required form elements, returns true if form is ready to send
+     * Checks for name, e-mail and commission type. All other inputs are considered optional
+     */
+    formValidated() {
+      return (
+        this.formFields.name.length > 0 &&
+        this.formFields.email.length > 0 &&
+        this.commissionSelected
+      );
+    },
+    /**
+     * Returns true is a commission item is selected
+     */
+    commissionSelected() {
+      return this.selectedCommissionType!="";
     }
   }
 };
