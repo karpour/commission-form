@@ -8,6 +8,7 @@ Features:
 * Integration of Bootstrap elements in Vue components
 * Mocked REST API interaction
 * File upload form
+* File size validation
 * Form verification
 * FontAwesome glyph integration
 

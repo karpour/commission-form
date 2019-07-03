@@ -9,6 +9,9 @@ import { faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { faTelegram} from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+
+// Fontawesome integration is pretty convoluted for just 3 icons
+
 library.add(
   faAt,
   faTwitter,
@@ -18,6 +21,10 @@ library.add(
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false
+
+// Include axios as a replacement for the http client that Vue 1 had
+// Note: it is apparently not considered good practice to add anything to the Vue prototype.
+//       Needs to be replaced by better soluction
 Vue.prototype.$http = axios
 
 new Vue({
