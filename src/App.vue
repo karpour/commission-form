@@ -38,7 +38,7 @@
     </div>
 
     <div class="row">
-      <ReferenceUploader></ReferenceUploader>
+      <ReferenceUploader @change="refChangeHandler"></ReferenceUploader>
     </div>
 
     <!-- Form -->
@@ -241,6 +241,7 @@ export default {
       selectedCommissionType: "",
       selectedCommissionPrice: 0,
       selectedCommissionPriceUpper: 0,
+      uploadedFiles: {},
       formFields: {
         name: "",
         email: "",
@@ -287,7 +288,19 @@ export default {
         }
       }
       // Add files to Formdata object
-      // TODO add files
+      // TODO make this work
+      /*let idx = 0;
+      for(let key in this.uploadedFiles){
+        console.log(file+": "+this.uploadedFiles[key]);  // eslint-disable-line
+        //formData.append("file-"+idx,uploadedFiles[key],key);
+        idx++;
+      }*/
+    },
+    /**
+     * Handles change events from the ReferenceUploader component
+     */
+    refChangeHandler(files){
+      this.uploadedFiles = files;
     }
   },
   /**

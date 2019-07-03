@@ -50,10 +50,20 @@
 <script>
 import ReferenceCard from "./ReferenceCard.vue";
 
-const maximumFileSize = 20971520; // 20MB
+/**
+ * @vue-prop {Number} maximumFileSize - Maximum file size in bytes. Larger files will be rejected
+ * 
+ * @vue-event {Object} change - Emitted when a file is added or removed
+ */
 
 export default {
   name: "ReferenceUploader",
+  props: {
+    maximumFileSize: {
+      type: Number,
+      default: 20971520 // 20MB
+    }
+  },
   data() {
     return {
       uploadedFiles: {},
@@ -67,11 +77,13 @@ export default {
     /**
      * Handler for the 'x' button on a ReferenceCard
      * Deletes the corresponding file from the uploaded files List and updates the DOM
+     * Emits 'cancel' event
      */
     cancelHandler(fileName) {
       // Deletes the key and updates the DOM
       // Using the regular delete operator the DOM would not be updated
       this.$delete(this.uploadedFiles, fileName);
+      this.$emit("change", this.uploadedFiles);
     },
 
     /**
@@ -82,6 +94,7 @@ export default {
     },
 
     /**
+     * Handler for the change event of the file input element
      * Retrieves the files from the 'files' object of the file input element
      * and loads them as Base64 url.
      */
@@ -111,14 +124,14 @@ export default {
       return new Promise((resolve, reject) => {
         const fReader = new FileReader();
         // File size validation
-        if (file.size < maximumFileSize) {
+        if (file.size < this.maximumFileSize) {
           fReader.onload = () => {
             resolve(fReader.result);
           };
           fReader.readAsDataURL(file);
         } else {
           reject(
-            `File is bigger than the maximum file size of ${maximumFileSize /
+            `File is bigger than the maximum file size of ${this.maximumFileSize /
               1024 /
               1024} MB`
           );
@@ -128,6 +141,7 @@ export default {
 
     /**
      * Adds a file to the uploadedFiles List
+     * Emits 'change' event
      *
      * @param {String} fileName - File name
      * @param {String} file - Base64 string with the file data
@@ -136,6 +150,7 @@ export default {
       console.log("Adding file " + fileName); // eslint-disable-line
       console.log(file); // eslint-disable-line
       this.$set(this.uploadedFiles, fileName, file);
+      this.$emit("change", this.uploadedFiles);
     }
   }
 };
