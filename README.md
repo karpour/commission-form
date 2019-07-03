@@ -15,6 +15,7 @@ Features:
 ## Notes
 
 * The application could be broken down into more Vue components
+* Probably better Bootstrap integration possible with bootstrap-vue
 
 ## Project setup
 

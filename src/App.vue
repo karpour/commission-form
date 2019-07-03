@@ -291,7 +291,7 @@ export default {
     }
   },
   /**
-   * Makes a (mocked) API call to retrieve the commission data and stores it
+   * Makes a (mocked) API call to retrieve the commission data and stores the result
    */
   created: function() {
     // console.log("Getting commission data\n"); // eslint-disable-line
